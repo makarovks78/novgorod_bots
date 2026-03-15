@@ -1,0 +1,32 @@
+needs_weight = 0 
+vp_weight = 0
+future_weight = 0
+
+wood_exponent = 0 
+food_exponent = 0 
+metal_exponent = 0 
+weapon_exponent = 0 
+wax_exponent = 0 
+wool_exponent = 0 
+money_exponent = 0
+people_exponent = 0 
+reputation_exponent = 0 
+action_cards_exponent = 0 
+law_cards_exponent = 0 
+war_cards_exponent = 0 
+
+wood_weight = 0 
+food_weight = 0 
+metal_weight = 0 
+weapon_weight = 0 
+wax_weight = 0 
+wool_weight = 0 
+money_weight = 0
+people_weight = 0 
+reputation_weight = 0 
+action_cards_weight = 0 
+law_cards_weight = 0 
+war_cards_weight = 0 
+
+greed_exponent = 0      # 1.0 - 2.0
+discount_exponent = 0   # 0.0 - 0.99

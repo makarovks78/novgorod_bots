@@ -1,0 +1,58 @@
+places = [
+    {id = 1, nhs = [2,3,4], region = "Plotnetsky"},
+    {id = 2, nhs = [1,4], region = "Plotnetsky"},
+    {id = 3, nhs = [1,4,5], region = "Plotnetsky"},
+    {id = 4, nhs = [1,2,3,5,6], region = "Plotnetsky"},
+    {id = 5, nhs = [3,4,6], region = "Plotnetsky"},
+    {id = 6, nhs = [4,5], region = "Plotnetsky"},
+
+    {id = 7, nhs = [8,9], region = "Plotnetsky"},
+    {id = 8, nhs = [7,9], region = "Plotnetsky"},
+    {id = 9, nhs = [7,8], region = "Plotnetsky"},
+
+    {id = 10, nhs = [11], region = "Plotnetsky"},
+    {id = 11, nhs = [10], region = "Plotnetsky"},
+
+    {id = 12, nhs = [13,14], region = "Slavensky"},
+    {id = 13, nhs = [12,14], region = "Slavensky"},
+    {id = 14, nhs = [12,13], region = "Slavensky"},
+
+    {id = 15, nhs = [16,17], region = "Slavensky"},
+    {id = 16, nhs = [15,17,18], region = "Slavensky"},
+    {id = 17, nhs = [15,16,18,19], region = "Slavensky"},
+    {id = 18, nhs = [16,17,19], region = "Slavensky"},
+    {id = 19, nhs = [17,18,20], region = "Slavensky"},
+    {id = 20, nhs = [19,21], region = "Slavensky"},
+    {id = 21, nhs = [20], region = "Slavensky"},
+
+    {id = 22, nhs = [23,24], region = "Nereevsky"},
+    {id = 23, nhs = [22,24], region = "Nereevsky"},
+    {id = 24, nhs = [22,23], region = "Nereevsky"},
+
+    {id = 25, nhs = [26,27], region = "Nereevsky"},
+    {id = 26, nhs = [25,27,28], region = "Nereevsky"},
+    {id = 27, nhs = [25,26,28], region = "Nereevsky"},
+    {id = 28, nhs = [26,27], region = "Nereevsky"},
+
+    {id = 29, nhs = [30,31,32], region = "Zagorodsky"},
+    {id = 30, nhs = [29,32,33], region = "Zagorodsky"},
+    {id = 31, nhs = [29,32], region = "Zagorodsky"},
+    {id = 32, nhs = [29,30,31,33], region = "Zagorodsky"},
+    {id = 33, nhs = [30,32], region = "Zagorodsky"},
+
+    {id = 34, nhs = [35,36], region = "Zagorodsky"},
+    {id = 35, nhs = [34,36], region = "Zagorodsky"},
+    {id = 36, nhs = [34,35], region = "Zagorodsky"},
+
+    {id = 37, nhs = [38,39], region = "Ludin"},
+    {id = 38, nhs = [37,39,40], region = "Ludin"},
+    {id = 39, nhs = [37,38,40], region = "Ludin"},
+    {id = 40, nhs = [38,39], region = "Ludin"},
+
+    {id = 41, nhs = [42,43], region = "Ludin"},
+    {id = 42, nhs = [41,43], region = "Ludin"},
+    {id = 43, nhs = [41,42], region = "Ludin"}
+]
+enemy_polock = 0
+enemy_sweden = 0
+enemy_vladimir = 0

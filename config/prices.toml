@@ -1,0 +1,9 @@
+workshop_weapons = { money = 4, wood = 2, metal = 1 }
+workshop_feeds = { money = 3, wood = 2 }
+workshop_wools = { money = 4, wood = 2, metal = 1 }
+workshop_waxes = { money = 4, wood = 2, metal = 1 }
+workshop_church = { money = 4, wood = 2, metal = 1 }
+workshop_school = { money = 4, wood = 3 }
+card_war = { money = 2 }
+card_law = { money = 2 }
+card_action = { money = 2 }
