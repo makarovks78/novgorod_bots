@@ -1,4 +1,11 @@
-use crate::{data::month_actions::{month_action_event, month_action_feed, month_action_food, month_action_market, month_action_people, month_action_vote, month_action_war, month_action_wood, month_action_workshop}, game::Game};
+use crate::{
+    data::month_actions::{
+        month_action_event, month_action_feed, month_action_food, month_action_market,
+        month_action_people, month_action_vote, month_action_war, month_action_wood,
+        month_action_workshop,
+    },
+    game::Game,
+};
 
 #[derive(Debug, Clone)]
 pub enum MonthActionEnum {
@@ -61,18 +68,71 @@ impl Month {
             max_count: max_count,
             current_count: 1,
             months: vec![
-                MonthEnum::April(vec![MonthActionEnum::War, MonthActionEnum::Market, MonthActionEnum::Workshop]),
-                MonthEnum::May(vec![MonthActionEnum::Event, MonthActionEnum::People, MonthActionEnum::Vote]),
-                MonthEnum::June(vec![MonthActionEnum::War, MonthActionEnum::Food, MonthActionEnum::Workshop, MonthActionEnum::Wood]),
-                MonthEnum::July(vec![MonthActionEnum::Event, MonthActionEnum::Market, MonthActionEnum::Feed]),
-                MonthEnum::August(vec![MonthActionEnum::War, MonthActionEnum::People, MonthActionEnum::Workshop, MonthActionEnum::Wood]),
-                MonthEnum::September(vec![MonthActionEnum::Event, MonthActionEnum::Food, MonthActionEnum::Vote]),
-                MonthEnum::October(vec![MonthActionEnum::War, MonthActionEnum::Market, MonthActionEnum::Workshop, MonthActionEnum::Food]),
-                MonthEnum::November(vec![MonthActionEnum::Event, MonthActionEnum::Feed, MonthActionEnum::Vote]),
-                MonthEnum::December(vec![MonthActionEnum::War, MonthActionEnum::People, MonthActionEnum::Workshop, MonthActionEnum::Wood]),
-                MonthEnum::January(vec![MonthActionEnum::Event, MonthActionEnum::Market, MonthActionEnum::Vote]),
-                MonthEnum::February(vec![MonthActionEnum::War, MonthActionEnum::Feed, MonthActionEnum::Workshop, MonthActionEnum::Wood]),
-                MonthEnum::March(vec![MonthActionEnum::Event, MonthActionEnum::People, MonthActionEnum::Vote]),
+                MonthEnum::April(vec![
+                    MonthActionEnum::War,
+                    MonthActionEnum::Market,
+                    MonthActionEnum::Workshop,
+                ]),
+                MonthEnum::May(vec![
+                    MonthActionEnum::Event,
+                    MonthActionEnum::People,
+                    MonthActionEnum::Vote,
+                ]),
+                MonthEnum::June(vec![
+                    MonthActionEnum::War,
+                    MonthActionEnum::Food,
+                    MonthActionEnum::Workshop,
+                    MonthActionEnum::Wood,
+                ]),
+                MonthEnum::July(vec![
+                    MonthActionEnum::Event,
+                    MonthActionEnum::Market,
+                    MonthActionEnum::Feed,
+                ]),
+                MonthEnum::August(vec![
+                    MonthActionEnum::War,
+                    MonthActionEnum::People,
+                    MonthActionEnum::Workshop,
+                    MonthActionEnum::Wood,
+                ]),
+                MonthEnum::September(vec![
+                    MonthActionEnum::Event,
+                    MonthActionEnum::Food,
+                    MonthActionEnum::Vote,
+                ]),
+                MonthEnum::October(vec![
+                    MonthActionEnum::War,
+                    MonthActionEnum::Market,
+                    MonthActionEnum::Workshop,
+                    MonthActionEnum::Food,
+                ]),
+                MonthEnum::November(vec![
+                    MonthActionEnum::Event,
+                    MonthActionEnum::Feed,
+                    MonthActionEnum::Vote,
+                ]),
+                MonthEnum::December(vec![
+                    MonthActionEnum::War,
+                    MonthActionEnum::People,
+                    MonthActionEnum::Workshop,
+                    MonthActionEnum::Wood,
+                ]),
+                MonthEnum::January(vec![
+                    MonthActionEnum::Event,
+                    MonthActionEnum::Market,
+                    MonthActionEnum::Vote,
+                ]),
+                MonthEnum::February(vec![
+                    MonthActionEnum::War,
+                    MonthActionEnum::Feed,
+                    MonthActionEnum::Workshop,
+                    MonthActionEnum::Wood,
+                ]),
+                MonthEnum::March(vec![
+                    MonthActionEnum::Event,
+                    MonthActionEnum::People,
+                    MonthActionEnum::Vote,
+                ]),
             ],
         }
     }
@@ -110,26 +170,22 @@ impl Month {
             MonthEnum::March(_) => "Март",
         }
     }
-    
+
     pub fn process_current_month_actions(&self, game: &mut Game) {
-    let actions: Vec<MonthActionEnum> = self
-        .get_current_month()
-        .actions()
-        .iter()
-        .cloned()
-        .collect();
-    for action in actions {
-        match action {
-            MonthActionEnum::War => month_action_war(game),
-            MonthActionEnum::Event => month_action_event(game),
-            MonthActionEnum::Food => month_action_food(game),
-            MonthActionEnum::Wood => month_action_wood(game),
-            MonthActionEnum::Feed => month_action_feed(game),
-            MonthActionEnum::Vote => month_action_vote(game),
-            MonthActionEnum::Market => month_action_market(game),
-            MonthActionEnum::Workshop => month_action_workshop(game),
-            MonthActionEnum::People => month_action_people(game),
+        let actions: Vec<MonthActionEnum> =
+            self.get_current_month().actions().iter().cloned().collect();
+        for action in actions {
+            match action {
+                MonthActionEnum::War => month_action_war(game),
+                MonthActionEnum::Event => month_action_event(game),
+                MonthActionEnum::Food => month_action_food(game),
+                MonthActionEnum::Wood => month_action_wood(game),
+                MonthActionEnum::Feed => month_action_feed(game),
+                MonthActionEnum::Vote => month_action_vote(game),
+                MonthActionEnum::Market => month_action_market(game),
+                MonthActionEnum::Workshop => month_action_workshop(game),
+                MonthActionEnum::People => month_action_people(game),
+            }
         }
     }
-}
 }

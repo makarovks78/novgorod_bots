@@ -7,3 +7,17 @@ workshop_school = { money = 4, wood = 3 }
 card_war = { money = 2 }
 card_law = { money = 2 }
 card_action = { money = 2 }
+field_food = { money = 3, wood = 2 }
+field_wood = { money = 2, wood = 1 }
+resource_wood = { money = 3 }
+resource_food = { money = 4 }
+resource_metal = { money = 5 }
+resource_weapon = { money = 6 }
+resource_wax = { money = 7 }
+resource_wool = { money = 8 }
+range_wood = { min = 2, max = 7 }
+range_food = { min = 3, max = 8 }
+range_metal = { min = 4, max = 9 }
+range_weapon = { min = 5, max = 10 }
+range_wax = { min = 6, max = 11 }
+range_wool = { min = 7, max = 12 }

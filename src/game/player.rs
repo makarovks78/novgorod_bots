@@ -5,6 +5,13 @@ use crate::{data::needs::Needs, utils::generate_hash};
 
 const PLAYER_DEFAULTS_CONFIG: &str = "config/player_defaults.toml";
 
+/// Рыночный лоток: ресурс, количество, цена за единицу
+#[derive(Debug, Clone, Default)]
+pub struct MarketStall {
+    pub qty: u8,
+    pub price: u16,
+}
+
 #[derive(Deserialize)]
 pub struct PlayerDefaults {
     pub wood: u8,
@@ -46,7 +53,14 @@ pub struct Player {
     pub war_cards_infantry: Vec<u64>,
     pub war_cards_cavalry: Vec<u64>,
     pub war_cards_archer: Vec<u64>,
-    pub needs: Needs
+    pub needs: Needs,
+    /// Рыночные лотки (по одному на каждый тип ресурса)
+    pub stall_wood: MarketStall,
+    pub stall_food: MarketStall,
+    pub stall_metal: MarketStall,
+    pub stall_weapon: MarketStall,
+    pub stall_wax: MarketStall,
+    pub stall_wool: MarketStall,
 }
 
 impl Player {
@@ -71,7 +85,45 @@ impl Player {
             war_cards_cavalry: vec![],
             war_cards_archer: vec![],
             is_first: false,
-            needs: Needs::new()
+            needs: Needs::new(),
+            stall_wood: MarketStall::default(),
+            stall_food: MarketStall::default(),
+            stall_metal: MarketStall::default(),
+            stall_weapon: MarketStall::default(),
+            stall_wax: MarketStall::default(),
+            stall_wool: MarketStall::default(),
+        }
+    }
+
+    /// Возвращает ссылку на рыночный лоток по типу ресурса
+    pub fn get_stall(
+        &self,
+        resource: &crate::data::resource::CubeResourceTypeEnum,
+    ) -> &MarketStall {
+        use crate::data::resource::CubeResourceTypeEnum;
+        match resource {
+            CubeResourceTypeEnum::Wood => &self.stall_wood,
+            CubeResourceTypeEnum::Food => &self.stall_food,
+            CubeResourceTypeEnum::Metal => &self.stall_metal,
+            CubeResourceTypeEnum::Weapon => &self.stall_weapon,
+            CubeResourceTypeEnum::Wax => &self.stall_wax,
+            CubeResourceTypeEnum::Wool => &self.stall_wool,
+        }
+    }
+
+    /// Возвращает мутабельную ссылку на рыночный лоток по типу ресурса
+    pub fn get_stall_mut(
+        &mut self,
+        resource: &crate::data::resource::CubeResourceTypeEnum,
+    ) -> &mut MarketStall {
+        use crate::data::resource::CubeResourceTypeEnum;
+        match resource {
+            CubeResourceTypeEnum::Wood => &mut self.stall_wood,
+            CubeResourceTypeEnum::Food => &mut self.stall_food,
+            CubeResourceTypeEnum::Metal => &mut self.stall_metal,
+            CubeResourceTypeEnum::Weapon => &mut self.stall_weapon,
+            CubeResourceTypeEnum::Wax => &mut self.stall_wax,
+            CubeResourceTypeEnum::Wool => &mut self.stall_wool,
         }
     }
 

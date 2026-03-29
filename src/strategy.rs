@@ -1,17 +1,16 @@
 use anyhow::{Context, Result};
-use rand::Rng;
 use rand::rngs::ThreadRng;
+use rand::Rng;
 use std::hash::Hash;
 
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::{f64, fs, u8};
 use std::path::Path;
+use std::{f64, fs, u8};
 
 use crate::data::future::Future;
-use crate::data::workshop::WorkshopTypeEnum;
-use crate::game::Game;
 use crate::game::player::Player;
+use crate::game::Game;
 
 const NORMAL_WEIGHT_CONFIG: &str = "config/strategy/normal.toml";
 const RICH_WEIGHT_CONFIG: &str = "config/strategy/rich.toml";
@@ -61,38 +60,38 @@ pub struct StrategyStatistics {
 
 #[derive(Deserialize)]
 pub struct StrategyWeight {
-    pub needs_weight: u64,
-    pub vp_weight: u64,
-    pub future_weight: u64,
+    pub needs_weight: f64,
+    pub vp_weight: f64,
+    pub future_weight: f64,
 
-    pub wood_exponent: u64,
-    pub food_exponent: u64,
-    pub metal_exponent: u64,
-    pub weapon_exponent: u64,
-    pub wax_exponent: u64,
-    pub wool_exponent: u64,
-    pub money_exponent: u64,
-    pub people_exponent: u64,
-    pub reputation_exponent: u64,
-    pub action_cards_exponent: u64,
-    pub law_cards_exponent: u64,
-    pub war_cards_exponent: u64,
+    pub wood_exponent: f64,
+    pub food_exponent: f64,
+    pub metal_exponent: f64,
+    pub weapon_exponent: f64,
+    pub wax_exponent: f64,
+    pub wool_exponent: f64,
+    pub money_exponent: f64,
+    pub people_exponent: f64,
+    pub reputation_exponent: f64,
+    pub action_cards_exponent: f64,
+    pub law_cards_exponent: f64,
+    pub war_cards_exponent: f64,
 
-    pub wood_weight: u64,
-    pub food_weight: u64,
-    pub metal_weight: u64,
-    pub weapon_weight: u64,
-    pub wax_weight: u64,
-    pub wool_weight: u64,
-    pub money_weight: u64,
-    pub people_weight: u64,
-    pub reputation_weight: u64,
-    pub action_cards_weight: u64,
-    pub law_cards_weight: u64,
-    pub war_cards_weight: u64,
+    pub wood_weight: f64,
+    pub food_weight: f64,
+    pub metal_weight: f64,
+    pub weapon_weight: f64,
+    pub wax_weight: f64,
+    pub wool_weight: f64,
+    pub money_weight: f64,
+    pub people_weight: f64,
+    pub reputation_weight: f64,
+    pub action_cards_weight: f64,
+    pub law_cards_weight: f64,
+    pub war_cards_weight: f64,
 
-    pub greed_exponent: u64,
-    pub discount_exponent: u64,
+    pub greed_exponent: f64,
+    pub discount_exponent: f64,
 }
 
 impl StrategyWeight {
@@ -146,83 +145,108 @@ impl Strategy {
         })
     }
 
-    pub fn calculate_strategy_score(
-        &self,
-        player_hash: u64,
-        game: &mut Game,
-        futures: &Future,
-    ) -> i16 {
-        let strategy = self.bots.get(&player_hash).unwrap();
-        let weights = self.strategy_weights.get(strategy).unwrap();
-        let player = game.get_player_by_hash(player_hash);
-        let score = 0;
+    pub fn evaluate_move(&self, player_hash: u64, game: &Game, futures: &Future, vp: f64) -> f64 {
+        let (score, _) = self.evaluate_move_detailed(player_hash, game, futures, vp);
         score
     }
 
-    pub fn evaluate_move(
+    /// Оценка хода с детальной разбивкой по компонентам.
+    /// Возвращает (итоговый_скор, строка_с_разбивкой).
+    pub fn evaluate_move_detailed(
         &self,
         player_hash: u64,
-        game: &mut Game,
+        game: &Game,
         futures: &Future,
         vp: f64,
-    ) -> f64 {
+    ) -> (f64, String) {
         let strategy = self.bots.get(&player_hash).unwrap();
-        let weights = self.strategy_weights.get(strategy).unwrap();
+        let w = self.strategy_weights.get(strategy).unwrap();
         let player = game.get_player_by_hash(player_hash);
-        let score: u64 = 0.0;
+        let needs = &player.needs.last;
 
         // =========================
         // 1. NEEDS (экспоненциальные)
         // =========================
-
-        let food_score = self.critical_coverage(player.food, player.needs.last.food, self.strategy_weights.get(strategy).unwrap().food_exponent);
-
-        let wood_score =
-            critical_coverage(player_after.wood, needs.wood, personality.wood_exponent);
-
-        let money_score =
-            critical_coverage(player_after.money, needs.money, personality.money_exponent);
-
-        let needs_score = food_score * personality.food_weight
-            + wood_score * personality.wood_weight
-            + money_score * personality.money_weight;
+        let needs_score = Self::critical_coverage(player.food, needs.food, w.food_exponent)
+            * w.food_weight
+            + Self::critical_coverage(player.wood, needs.wood, w.wood_exponent) * w.wood_weight
+            + Self::critical_coverage(player.metal, needs.metal, w.metal_exponent) * w.metal_weight
+            + Self::critical_coverage(player.weapon, needs.weapon, w.weapon_exponent)
+                * w.weapon_weight
+            + Self::critical_coverage(player.wax, needs.wax, w.wax_exponent) * w.wax_weight
+            + Self::critical_coverage(player.wool, needs.wool, w.wool_exponent) * w.wool_weight
+            + Self::critical_coverage(player.money.min(255) as u8, needs.money, w.money_exponent)
+                * w.money_weight
+            + Self::critical_coverage(player.people, needs.people, w.people_exponent)
+                * w.people_weight
+            + Self::critical_coverage(player.reputation, needs.reputation, w.reputation_exponent)
+                * w.reputation_weight
+            + Self::critical_coverage(
+                player.action_cards.len().min(255) as u8,
+                needs.action_cards,
+                w.action_cards_exponent,
+            ) * w.action_cards_weight
+            + Self::critical_coverage(
+                player.law_cards.len().min(255) as u8,
+                needs.law_cards,
+                w.law_cards_exponent,
+            ) * w.law_cards_weight
+            + Self::critical_coverage(
+                (player.war_cards_infantry.len()
+                    + player.war_cards_cavalry.len()
+                    + player.war_cards_archer.len())
+                .min(255) as u8,
+                needs.war_cards,
+                w.war_cards_exponent,
+            ) * w.war_cards_weight;
 
         // =========================
         // 2. LONG TERM FUTURE (discount factor)
         // =========================
+        let discount = w.discount_exponent.clamp(0.0, 0.99);
+        let horizon_multiplier = if discount > 0.0 {
+            1.0 / (1.0 - discount)
+        } else {
+            1.0
+        };
 
-        let horizon_multiplier = 1.0 / (1.0 - personality.discount);
-
-        let long_term_future =
-            (future.money as f64 + future.wood as f64 + future.food as f64) * horizon_multiplier;
+        let long_term_future = (futures.money as f64
+            + futures.wood as f64
+            + futures.food as f64
+            + futures.metal as f64
+            + futures.weapon as f64
+            + futures.wax as f64
+            + futures.wool as f64)
+            * horizon_multiplier;
 
         // =========================
         // 3. FUTURE с diminishing returns
         // =========================
-
-        let future_value = diminishing_return(player_after.money as f64, future.money as f64)
-            + diminishing_return(player_after.wood as f64, future.wood as f64)
-            + diminishing_return(player_after.food as f64, future.food as f64);
-
-        // =========================
-        // 4. GREED (накопление)
-        // =========================
-
-        let stockpile =
-            player_after.money as f64 + player_after.wood as f64 + player_after.food as f64;
-
-        let stockpile_value = stockpile.powf(1.0 + personality.greed * 0.3);
+        let future_value = Self::diminishing_return(player.money as f64, futures.money as f64)
+            + Self::diminishing_return(player.wood as f64, futures.wood as f64)
+            + Self::diminishing_return(player.food as f64, futures.food as f64)
+            + Self::diminishing_return(player.metal as f64, futures.metal as f64)
+            + Self::diminishing_return(player.weapon as f64, futures.weapon as f64)
+            + Self::diminishing_return(player.wax as f64, futures.wax as f64)
+            + Self::diminishing_return(player.wool as f64, futures.wool as f64);
 
         // =========================
-        // 5. FINAL SCORE
+        // 4. FINAL SCORE
         // =========================
+        let comp_needs = needs_score * w.needs_weight;
+        let comp_vp = vp * w.vp_weight;
+        let comp_future = (future_value + long_term_future) * w.future_weight;
+        let total = comp_needs + comp_vp + comp_future;
 
-        let score = needs_score * personality.needs_weight
-            + vp * personality.vp_weight
-            + (future_value + long_term_future) * personality.future_weight
-            + stockpile_value * personality.greed;
+        let debug = format!(
+            "needs={:.2}(raw {:.2}*w{:.2}) vp={:.2}(raw {:.1}*w{:.2}) future={:.2}(dimret {:.2}+longterm {:.2})*w{:.2} => {:.2}",
+            comp_needs, needs_score, w.needs_weight,
+            comp_vp, vp, w.vp_weight,
+            comp_future, future_value, long_term_future, w.future_weight,
+            total
+        );
 
-        score
+        (total, debug)
     }
 
     pub fn to_string(&self, players: &Vec<Player>) -> String {
@@ -339,5 +363,4 @@ impl Strategy {
 
         Ok(())
     }
-
 }

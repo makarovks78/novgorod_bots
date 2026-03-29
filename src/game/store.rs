@@ -3,6 +3,9 @@ use serde_derive::Deserialize;
 use std::fs;
 use std::path::Path;
 
+use crate::data::workshop::WorkshopTypeEnum;
+use crate::game::player::MarketStall;
+
 const STORE_CONFIG: &str = "config/store.toml";
 
 #[derive(Debug, Deserialize, Clone)]
@@ -26,6 +29,26 @@ pub struct Store {
     pub war_cards_infantry: Vec<u64>,
     pub war_cards_cavalry: Vec<u64>,
     pub war_cards_archer: Vec<u64>,
+    /// Настроение народа (1-6), влияет на порог голосования
+    #[serde(default = "default_mood")]
+    pub mood: u8,
+    /// Рыночные лотки магазина (НЕ сериализуются, создаются в рантайме)
+    #[serde(skip)]
+    pub stall_wood: MarketStall,
+    #[serde(skip)]
+    pub stall_food: MarketStall,
+    #[serde(skip)]
+    pub stall_metal: MarketStall,
+    #[serde(skip)]
+    pub stall_weapon: MarketStall,
+    #[serde(skip)]
+    pub stall_wax: MarketStall,
+    #[serde(skip)]
+    pub stall_wool: MarketStall,
+}
+
+fn default_mood() -> u8 {
+    3
 }
 
 impl Store {
@@ -67,4 +90,72 @@ impl Store {
         Ok(stuff)
     }
 
+    /// Проверяет, есть ли мастерская данного типа в запасе
+    pub fn has_workshop(&self, workshop_type: &WorkshopTypeEnum) -> bool {
+        match workshop_type {
+            WorkshopTypeEnum::Weapons => self.weapons > 0,
+            WorkshopTypeEnum::Feeds => self.feeds > 0,
+            WorkshopTypeEnum::Waxes => self.waxes > 0,
+            WorkshopTypeEnum::Wools => self.wools > 0,
+            WorkshopTypeEnum::Church => self.church > 0,
+            WorkshopTypeEnum::School => self.school > 0,
+        }
+    }
+
+    /// Уменьшает запас мастерских данного типа на 1
+    pub fn take_workshop(&mut self, workshop_type: &WorkshopTypeEnum) {
+        match workshop_type {
+            WorkshopTypeEnum::Weapons => self.weapons = self.weapons.saturating_sub(1),
+            WorkshopTypeEnum::Feeds => self.feeds = self.feeds.saturating_sub(1),
+            WorkshopTypeEnum::Waxes => self.waxes = self.waxes.saturating_sub(1),
+            WorkshopTypeEnum::Wools => self.wools = self.wools.saturating_sub(1),
+            WorkshopTypeEnum::Church => self.church = self.church.saturating_sub(1),
+            WorkshopTypeEnum::School => self.school = self.school.saturating_sub(1),
+        }
+    }
+
+    /// Проверяет, есть ли ресурс данного типа в хранилище
+    pub fn has_resource(&self, resource: &crate::data::resource::CubeResourceTypeEnum) -> bool {
+        use crate::data::resource::CubeResourceTypeEnum;
+        match resource {
+            CubeResourceTypeEnum::Wood => self.wood > 0,
+            CubeResourceTypeEnum::Food => self.food > 0,
+            CubeResourceTypeEnum::Metal => self.metal > 0,
+            CubeResourceTypeEnum::Weapon => self.weapon > 0,
+            CubeResourceTypeEnum::Wax => self.wax > 0,
+            CubeResourceTypeEnum::Wool => self.wool > 0,
+        }
+    }
+
+    /// Возвращает ссылку на рыночный лоток магазина по типу ресурса
+    pub fn get_stall(
+        &self,
+        resource: &crate::data::resource::CubeResourceTypeEnum,
+    ) -> &MarketStall {
+        use crate::data::resource::CubeResourceTypeEnum;
+        match resource {
+            CubeResourceTypeEnum::Wood => &self.stall_wood,
+            CubeResourceTypeEnum::Food => &self.stall_food,
+            CubeResourceTypeEnum::Metal => &self.stall_metal,
+            CubeResourceTypeEnum::Weapon => &self.stall_weapon,
+            CubeResourceTypeEnum::Wax => &self.stall_wax,
+            CubeResourceTypeEnum::Wool => &self.stall_wool,
+        }
+    }
+
+    /// Возвращает мутабельную ссылку на рыночный лоток магазина
+    pub fn get_stall_mut(
+        &mut self,
+        resource: &crate::data::resource::CubeResourceTypeEnum,
+    ) -> &mut MarketStall {
+        use crate::data::resource::CubeResourceTypeEnum;
+        match resource {
+            CubeResourceTypeEnum::Wood => &mut self.stall_wood,
+            CubeResourceTypeEnum::Food => &mut self.stall_food,
+            CubeResourceTypeEnum::Metal => &mut self.stall_metal,
+            CubeResourceTypeEnum::Weapon => &mut self.stall_weapon,
+            CubeResourceTypeEnum::Wax => &mut self.stall_wax,
+            CubeResourceTypeEnum::Wool => &mut self.stall_wool,
+        }
+    }
 }

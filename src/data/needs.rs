@@ -79,62 +79,62 @@ impl Needs {
 
     pub fn put_wood(&mut self, qty: u8) {
         if self.current.wood < qty {
-            self.current.wood = qty 
+            self.current.wood = qty
         }
     }
     pub fn put_food(&mut self, qty: u8) {
         if self.current.food < qty {
-            self.current.food = qty 
+            self.current.food = qty
         }
     }
     pub fn put_metal(&mut self, qty: u8) {
         if self.current.metal < qty {
-            self.current.metal = qty 
+            self.current.metal = qty
         }
     }
     pub fn put_weapon(&mut self, qty: u8) {
         if self.current.weapon < qty {
-            self.current.weapon = qty 
+            self.current.weapon = qty
         }
     }
     pub fn put_wax(&mut self, qty: u8) {
         if self.current.wax < qty {
-            self.current.wax = qty 
+            self.current.wax = qty
         }
     }
     pub fn put_wool(&mut self, qty: u8) {
         if self.current.wool < qty {
-            self.current.wool = qty 
+            self.current.wool = qty
         }
     }
     pub fn put_money(&mut self, qty: u8) {
         if self.current.money < qty {
-            self.current.money = qty 
+            self.current.money = qty
         }
     }
     pub fn put_people(&mut self, qty: u8) {
         if self.current.people < qty {
-            self.current.people = qty 
+            self.current.people = qty
         }
     }
     pub fn put_reputation(&mut self, qty: u8) {
         if self.current.reputation < qty {
-            self.current.reputation = qty 
+            self.current.reputation = qty
         }
     }
     pub fn put_action_cards(&mut self, qty: u8) {
         if self.current.action_cards < qty {
-            self.current.action_cards = qty 
+            self.current.action_cards = qty
         }
     }
     pub fn put_law_cards(&mut self, qty: u8) {
         if self.current.law_cards < qty {
-            self.current.law_cards = qty 
+            self.current.law_cards = qty
         }
     }
     pub fn put_war_cards(&mut self, qty: u8) {
         if self.current.war_cards < qty {
-            self.current.war_cards = qty 
+            self.current.war_cards = qty
         }
     }
 }

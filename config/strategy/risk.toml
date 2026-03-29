@@ -1,0 +1,41 @@
+# Рисковый стратегия (Risk)
+# Агрессивный игрок: фокус на войне, оружии и военных картах.
+# Короткий горизонт — атакует сейчас, не думает о будущем.
+# Минимальная жадность — тратит всё на войну.
+# Высоко ценит VP (война приносит много очков).
+# Ценит оружие, военные карты, метал (для оружия).
+
+needs_weight = 1.5
+vp_weight = 4.0
+future_weight = 1.0
+
+# Exponents: оружие и военные карты — критические, резкий штраф
+wood_exponent = 1.0
+food_exponent = 2.0
+metal_exponent = 3.0
+weapon_exponent = 4.0
+wax_exponent = 1.0
+wool_exponent = 1.0
+money_exponent = 2.5
+people_exponent = 2.0
+reputation_exponent = 1.5
+action_cards_exponent = 1.0
+law_cards_exponent = 0.5
+war_cards_exponent = 4.0
+
+# Weights: оружие, военные карты, метал — приоритет
+wood_weight = 1.0
+food_weight = 3.0
+metal_weight = 4.0
+weapon_weight = 6.0
+wax_weight = 1.0
+wool_weight = 1.5
+money_weight = 3.5
+people_weight = 3.0
+reputation_weight = 1.5
+action_cards_weight = 1.5
+law_cards_weight = 0.5
+war_cards_weight = 6.0
+
+greed_exponent = 0.3       # 0.0 - 2.0 (минимальная жадность — всё в войну)
+discount_exponent = 0.2    # 0.0 - 0.99 (короткий горизонт — атакуй сейчас)

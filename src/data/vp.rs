@@ -67,16 +67,11 @@ impl VictoryPointsConfig {
             + self.war_cards_infantry * player.war_cards_infantry.len() as f32
             + self.war_cards_cavalry * player.war_cards_cavalry.len() as f32
             + self.war_cards_archer * player.war_cards_archer.len() as f32
-            + indexes
-                .people_vp_map
-                .get(&player.people)
-                .unwrap()
-                .clone() as f32
-            + indexes
+            + *indexes.people_vp_map.get(&player.people).unwrap_or(&0) as f32
+            + *indexes
                 .reputation_vp_map
                 .get(&player.reputation)
-                .unwrap()
-                .clone() as f32;
+                .unwrap_or(&0) as f32;
         vp.floor() as i16
     }
 }

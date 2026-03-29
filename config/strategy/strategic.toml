@@ -1,0 +1,40 @@
+# Стратег стратегия (Strategic)
+# Максимальный горизонт планирования. Ценит будущие доходы выше текущих.
+# Инвестирует в людей и репутацию (экономические мультипликаторы).
+# Умеренная жадность — копит ресурсы для оптимальных моментов.
+# Терпеливый игрок: жертвует текущими VP ради доминирования в поздней игре.
+
+needs_weight = 2.5
+vp_weight = 2.0
+future_weight = 5.0
+
+# Exponents: люди и репутация — главные мультипликаторы, резкий штраф за нехватку
+wood_exponent = 2.0
+food_exponent = 3.0
+metal_exponent = 1.5
+weapon_exponent = 1.5
+wax_exponent = 1.5
+wool_exponent = 2.0
+money_exponent = 2.0
+people_exponent = 3.5
+reputation_exponent = 3.5
+action_cards_exponent = 2.0
+law_cards_exponent = 2.0
+war_cards_exponent = 1.5
+
+# Weights: люди и репутация — высший приоритет (мультипликаторы экономики)
+wood_weight = 2.5
+food_weight = 4.5
+metal_weight = 2.0
+weapon_weight = 2.0
+wax_weight = 2.5
+wool_weight = 3.0
+money_weight = 3.0
+people_weight = 6.0
+reputation_weight = 6.0
+action_cards_weight = 3.0
+law_cards_weight = 3.0
+war_cards_weight = 2.0
+
+greed_exponent = 0.8       # 0.0 - 2.0 (умеренная жадность — копит для ключевых моментов)
+discount_exponent = 0.95   # 0.0 - 0.99 (максимальный горизонт — думает на много ходов вперёд)

@@ -1,4 +1,4 @@
-use serde::{Deserialize, Deserializer, de};
+use serde::{de, Deserialize, Deserializer};
 use std::collections::HashMap;
 
 pub fn deserialize_u8_key_map<'de, D>(deserializer: D) -> Result<HashMap<u8, u8>, D::Error>

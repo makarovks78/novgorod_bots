@@ -53,6 +53,9 @@ places = [
     {id = 42, nhs = [41,43], region = "Ludin"},
     {id = 43, nhs = [41,42], region = "Ludin"}
 ]
+commander = 0
+archbishop = 0
+mayor = 0
 enemy_polock = 0
 enemy_sweden = 0
 enemy_vladimir = 0

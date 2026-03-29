@@ -167,4 +167,97 @@ impl MainDesk {
             })
             .count()
     }
+
+    /// Находит мастерскую для захвата: принадлежит другому игроку, помечена фишкой (не фигуркой)
+    pub fn find_takeover_target(&self, attacker_hash: u64) -> Option<(u8, u64)> {
+        self.places
+            .iter()
+            .find(|place| {
+                if let Some(owner) = place.owner_hash {
+                    // Чужая мастерская с фишкой (не с фигуркой)
+                    owner != attacker_hash && !place.is_miple && place.workshop_type.is_some()
+                } else {
+                    false
+                }
+            })
+            .map(|place| (place.id, place.owner_hash.unwrap()))
+    }
+
+    /// Захватывает мастерскую: меняет владельца и ставит фигурку нового игрока
+    pub fn takeover_workshop(&mut self, place_id: u8, new_owner_hash: u64) {
+        if let Some(place) = self.places.iter_mut().find(|p| p.id == place_id) {
+            place.owner_hash = Some(new_owner_hash);
+            place.is_miple = true; // Новый владелец ставит фигурку
+        }
+    }
+
+    /// Возвращает хэш игрока на позиции посадника (mayor), или 0 если позиция пуста
+    pub fn get_mayor_hash(&self) -> u64 {
+        self.mayor
+    }
+
+    /// Устанавливает посадника
+    pub fn set_mayor(&mut self, player_hash: u64) {
+        self.mayor = player_hash;
+    }
+
+    /// Устанавливает архиепископа
+    pub fn set_archbishop(&mut self, player_hash: u64) {
+        self.archbishop = player_hash;
+    }
+
+    /// Устанавливает тысяцкого (commander)
+    pub fn set_commander(&mut self, player_hash: u64) {
+        self.commander = player_hash;
+    }
+
+    /// Считает количество мастерских игрока с фигуркой (is_miple = true)
+    pub fn count_player_miples(&self, player_hash: u64) -> u8 {
+        self.places
+            .iter()
+            .filter(|p| p.owner_hash == Some(player_hash) && p.is_miple)
+            .count() as u8
+    }
+
+    /// Считает количество мастерских игрока с фишкой (is_miple = false)
+    pub fn count_player_chips(&self, player_hash: u64) -> u8 {
+        self.places
+            .iter()
+            .filter(|p| p.owner_hash == Some(player_hash) && !p.is_miple)
+            .count() as u8
+    }
+
+    /// Ставит фигурку на мастерскую (заменяет фишку)
+    pub fn set_miple(&mut self, place_id: u8) {
+        if let Some(place) = self.places.iter_mut().find(|p| p.id == place_id) {
+            place.is_miple = true;
+        }
+    }
+
+    /// Убирает фигурку с мастерской (ставит фишку)
+    pub fn remove_miple(&mut self, place_id: u8) {
+        if let Some(place) = self.places.iter_mut().find(|p| p.id == place_id) {
+            place.is_miple = false;
+        }
+    }
+
+    /// Возвращает список ID мастерских игрока без фигурки
+    pub fn get_player_chip_places(&self, player_hash: u64) -> Vec<u8> {
+        self.places
+            .iter()
+            .filter(|p| {
+                p.owner_hash == Some(player_hash) && !p.is_miple && p.workshop_type.is_some()
+            })
+            .map(|p| p.id)
+            .collect()
+    }
+
+    /// Возвращает список ID мастерских игрока с фигуркой
+    pub fn get_player_miple_places(&self, player_hash: u64) -> Vec<u8> {
+        self.places
+            .iter()
+            .filter(|p| p.owner_hash == Some(player_hash) && p.is_miple)
+            .map(|p| p.id)
+            .collect()
+    }
 }

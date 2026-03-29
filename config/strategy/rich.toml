@@ -1,32 +1,39 @@
-needs_weight = 0 
-vp_weight = 0
-future_weight = 0
+# Жадный стратегия (Rich)
+# Максимизирует деньги и немедленные VP. Высокая жадность, короткий горизонт.
+# Ценит деньги, шерсть, воск — всё, что даёт VP напрямую.
+# Меньше заботится о будущем, больше хватает сейчас.
 
-wood_exponent = 0 
-food_exponent = 0 
-metal_exponent = 0 
-weapon_exponent = 0 
-wax_exponent = 0 
-wool_exponent = 0 
-money_exponent = 0
-people_exponent = 0 
-reputation_exponent = 0 
-action_cards_exponent = 0 
-law_cards_exponent = 0 
-war_cards_exponent = 0 
+needs_weight = 2.0
+vp_weight = 4.0
+future_weight = 1.5
 
-wood_weight = 0 
-food_weight = 0 
-metal_weight = 0 
-weapon_weight = 0 
-wax_weight = 0 
-wool_weight = 0 
-money_weight = 0
-people_weight = 0 
-reputation_weight = 0 
-action_cards_weight = 0 
-law_cards_weight = 0 
-war_cards_weight = 0 
+# Exponents: деньги и VP-ресурсы — высокий штраф за нехватку
+wood_exponent = 1.5
+food_exponent = 2.0
+metal_exponent = 1.5
+weapon_exponent = 2.0
+wax_exponent = 2.5
+wool_exponent = 3.0
+money_exponent = 3.5
+people_exponent = 1.5
+reputation_exponent = 1.5
+action_cards_exponent = 1.0
+law_cards_exponent = 1.0
+war_cards_exponent = 1.5
 
-greed_exponent = 0      # 1.0 - 2.0
-discount_exponent = 0   # 0.0 - 0.99
+# Weights: деньги и дорогие ресурсы важнее всего
+wood_weight = 1.5
+food_weight = 3.0
+metal_weight = 1.5
+weapon_weight = 3.0
+wax_weight = 3.5
+wool_weight = 5.0
+money_weight = 6.0
+people_weight = 2.0
+reputation_weight = 2.0
+action_cards_weight = 1.0
+law_cards_weight = 1.0
+war_cards_weight = 3.0
+
+greed_exponent = 1.8       # 0.0 - 2.0 (высокое накопление)
+discount_exponent = 0.3    # 0.0 - 0.99 (короткий горизонт — хватай сейчас)

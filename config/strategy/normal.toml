@@ -1,32 +1,38 @@
-needs_weight = 0 
-vp_weight = 0
-future_weight = 0
+# Сбалансированная стратегия (Normal)
+# Равномерно распределяет внимание по всем аспектам игры.
+# Умеренный горизонт планирования, умеренная жадность.
 
-wood_exponent = 0 
-food_exponent = 0 
-metal_exponent = 0 
-weapon_exponent = 0 
-wax_exponent = 0 
-wool_exponent = 0 
-money_exponent = 0
-people_exponent = 0 
-reputation_exponent = 0 
-action_cards_exponent = 0 
-law_cards_exponent = 0 
-war_cards_exponent = 0 
+needs_weight = 3.0
+vp_weight = 3.0
+future_weight = 2.0
 
-wood_weight = 0 
-food_weight = 0 
-metal_weight = 0 
-weapon_weight = 0 
-wax_weight = 0 
-wool_weight = 0 
-money_weight = 0
-people_weight = 0 
-reputation_weight = 0 
-action_cards_weight = 0 
-law_cards_weight = 0 
-war_cards_weight = 0 
+# Exponents: крутизна штрафа за дефицит (1.0 = линейный, 3.0+ = резкий)
+wood_exponent = 2.0
+food_exponent = 2.5
+metal_exponent = 1.5
+weapon_exponent = 1.5
+wax_exponent = 1.5
+wool_exponent = 1.5
+money_exponent = 2.0
+people_exponent = 2.0
+reputation_exponent = 2.0
+action_cards_exponent = 1.0
+law_cards_exponent = 1.0
+war_cards_exponent = 1.0
 
-greed_exponent = 0      # 1.0 - 2.0
-discount_exponent = 0   # 0.0 - 0.99
+# Weights: относительная важность каждого ресурса в оценке потребностей
+wood_weight = 3.0
+food_weight = 4.0
+metal_weight = 2.0
+weapon_weight = 2.5
+wax_weight = 2.5
+wool_weight = 3.0
+money_weight = 3.5
+people_weight = 3.0
+reputation_weight = 3.0
+action_cards_weight = 1.5
+law_cards_weight = 1.5
+war_cards_weight = 2.0
+
+greed_exponent = 1.0       # 0.0 - 2.0 (умеренное накопление)
+discount_exponent = 0.5    # 0.0 - 0.99 (средний горизонт)

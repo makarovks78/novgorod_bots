@@ -1,6 +1,6 @@
-use std::{collections::HashMap, fs};
-use anyhow::{Context, Result}; 
+use anyhow::{Context, Result};
 use serde_derive::{Deserialize, Serialize};
+use std::{collections::HashMap, fs};
 
 const TURN_STATS_FILE: &str = "logs/stats/turn_stats.toml";
 

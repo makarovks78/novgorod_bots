@@ -1,5 +1,7 @@
+use crate::game_info;
 use log::info;
 
+use crate::data::price::StorePrices;
 use crate::data::resource::CubeResourceTypeEnum;
 use crate::data::vp::VictoryPointsConfig;
 use crate::game::fields_desk::FieldDesk;
@@ -22,6 +24,7 @@ pub struct Game {
     pub indexes: Indexes,
     pub players: Vec<Player>,
     pub store: Store,
+    pub prices: StorePrices,
 }
 
 impl Game {
@@ -49,6 +52,7 @@ impl Game {
         let store = Store::new()?;
         let indexes = Indexes::new()?;
         let field_desk = FieldDesk::new()?;
+        let prices = StorePrices::new()?;
         let mut players = vec![];
         for name in players_names {
             players.push(Player::new(name));
@@ -60,6 +64,7 @@ impl Game {
             indexes,
             players,
             store,
+            prices,
         };
         new_game.give_defaults();
         Ok(new_game)
@@ -105,38 +110,45 @@ impl Game {
         resource: CubeResourceTypeEnum,
         qty: u8,
     ) {
-        let player = self.get_player_by_hash_mut(player_hash);
-        info!(
+        // Считаем фактическое количество до заимствования player
+        let actual = match resource {
+            CubeResourceTypeEnum::Food => qty.min(self.store.food),
+            CubeResourceTypeEnum::Wood => qty.min(self.store.wood),
+            CubeResourceTypeEnum::Metal => qty.min(self.store.metal),
+            CubeResourceTypeEnum::Wax => qty.min(self.store.wax),
+            CubeResourceTypeEnum::Wool => qty.min(self.store.wool),
+            CubeResourceTypeEnum::Weapon => qty.min(self.store.weapon),
+        };
+
+        let player = self
+            .players
+            .iter_mut()
+            .find(|p| p.hash == player_hash)
+            .unwrap();
+
+        game_info!(
             "Игроку {} дали {} ресурса {}",
             player.name,
-            qty,
+            actual,
             resource.name()
         );
         match resource {
-            CubeResourceTypeEnum::Food => {
-                player.food += qty;
-                self.store.food -= qty;
-            }
-            CubeResourceTypeEnum::Wood => {
-                player.wood += qty;
-                self.store.wood -= qty;
-            }
-            CubeResourceTypeEnum::Metal => {
-                player.metal += qty;
-                self.store.metal -= qty;
-            }
-            CubeResourceTypeEnum::Wax => {
-                player.wax += qty;
-                self.store.wax -= qty;
-            }
-            CubeResourceTypeEnum::Wool => {
-                player.wool += qty;
-                self.store.wool -= qty;
-            }
-            CubeResourceTypeEnum::Weapon => {
-                player.weapon += qty;
-                self.store.weapon -= qty;
-            }
+            CubeResourceTypeEnum::Food => player.food = player.food.saturating_add(actual),
+            CubeResourceTypeEnum::Wood => player.wood = player.wood.saturating_add(actual),
+            CubeResourceTypeEnum::Metal => player.metal = player.metal.saturating_add(actual),
+            CubeResourceTypeEnum::Wax => player.wax = player.wax.saturating_add(actual),
+            CubeResourceTypeEnum::Wool => player.wool = player.wool.saturating_add(actual),
+            CubeResourceTypeEnum::Weapon => player.weapon = player.weapon.saturating_add(actual),
+        }
+
+        // Уменьшаем запас хранилища
+        match resource {
+            CubeResourceTypeEnum::Food => self.store.food -= actual,
+            CubeResourceTypeEnum::Wood => self.store.wood -= actual,
+            CubeResourceTypeEnum::Metal => self.store.metal -= actual,
+            CubeResourceTypeEnum::Wax => self.store.wax -= actual,
+            CubeResourceTypeEnum::Wool => self.store.wool -= actual,
+            CubeResourceTypeEnum::Weapon => self.store.weapon -= actual,
         }
     }
 
@@ -146,91 +158,123 @@ impl Game {
         resource: CubeResourceTypeEnum,
         qty: u8,
     ) {
-        let player = self.get_player_by_hash_mut(player_hash);
-        info!(
+        let player = self
+            .players
+            .iter_mut()
+            .find(|p| p.hash == player_hash)
+            .unwrap();
+
+        let actual = match resource {
+            CubeResourceTypeEnum::Food => qty.min(player.food),
+            CubeResourceTypeEnum::Wood => qty.min(player.wood),
+            CubeResourceTypeEnum::Metal => qty.min(player.metal),
+            CubeResourceTypeEnum::Wax => qty.min(player.wax),
+            CubeResourceTypeEnum::Wool => qty.min(player.wool),
+            CubeResourceTypeEnum::Weapon => qty.min(player.weapon),
+        };
+
+        game_info!(
             "У игрока {} взяли {} ресурса {}",
             player.name,
-            qty,
+            actual,
             resource.name()
         );
+
         match resource {
-            CubeResourceTypeEnum::Food => {
-                player.food -= qty;
-                self.store.food += qty;
-            }
-            CubeResourceTypeEnum::Wood => {
-                player.wood -= qty;
-                self.store.wood += qty;
-            }
+            CubeResourceTypeEnum::Food => player.food -= actual,
+            CubeResourceTypeEnum::Wood => player.wood -= actual,
+            CubeResourceTypeEnum::Metal => player.metal -= actual,
+            CubeResourceTypeEnum::Wax => player.wax -= actual,
+            CubeResourceTypeEnum::Wool => player.wool -= actual,
+            CubeResourceTypeEnum::Weapon => player.weapon -= actual,
+        }
+
+        // Возвращаем ресурс в хранилище
+        match resource {
+            CubeResourceTypeEnum::Food => self.store.food = self.store.food.saturating_add(actual),
+            CubeResourceTypeEnum::Wood => self.store.wood = self.store.wood.saturating_add(actual),
             CubeResourceTypeEnum::Metal => {
-                player.metal -= qty;
-                self.store.metal += qty;
+                self.store.metal = self.store.metal.saturating_add(actual)
             }
-            CubeResourceTypeEnum::Wax => {
-                player.wax -= qty;
-                self.store.wax += qty;
-            }
-            CubeResourceTypeEnum::Wool => {
-                player.wool -= qty;
-                self.store.wool += qty;
-            }
+            CubeResourceTypeEnum::Wax => self.store.wax = self.store.wax.saturating_add(actual),
+            CubeResourceTypeEnum::Wool => self.store.wool = self.store.wool.saturating_add(actual),
             CubeResourceTypeEnum::Weapon => {
-                player.weapon -= qty;
-                self.store.weapon += qty;
+                self.store.weapon = self.store.weapon.saturating_add(actual)
             }
         }
     }
 
     pub fn give_money(&mut self, player_hash: u64, qty: u16) {
-        self.store.money -= qty;
-        let player = self.get_player_by_hash_mut(player_hash);
-        player.money += qty;
-        info!("Игроку {} дали {} монет", player.name, qty);
+        let actual = qty.min(self.store.money);
+        self.store.money -= actual;
+        let player = self
+            .players
+            .iter_mut()
+            .find(|p| p.hash == player_hash)
+            .unwrap();
+        player.money = player.money.saturating_add(actual);
+        game_info!("Игроку {} дали {} монет", player.name, actual);
     }
 
     pub fn take_money(&mut self, player_hash: u64, qty: u16) {
-        self.store.money += qty;
-        let player = self.get_player_by_hash_mut(player_hash);
-        player.money -= qty;
-        info!("У игрока {} взяли {} монет", player.name, qty);
+        let player = self
+            .players
+            .iter_mut()
+            .find(|p| p.hash == player_hash)
+            .unwrap();
+        let actual = qty.min(player.money);
+        player.money -= actual;
+        game_info!("У игрока {} взяли {} монет", player.name, actual);
+        self.store.money = self.store.money.saturating_add(actual);
     }
 
     pub fn give_vp(&mut self, player_hash: u64, qty: u8) {
         let player = self.get_player_by_hash_mut(player_hash);
-        player.vp += qty;
-        info!("Игроку {} дали {} ПО", player.name, qty);
+        player.vp = player.vp.saturating_add(qty);
+        game_info!("Игроку {} дали {} ПО", player.name, qty);
     }
 
     pub fn take_vp(&mut self, player_hash: u64, qty: u8) {
         let player = self.get_player_by_hash_mut(player_hash);
-        player.vp -= qty;
-        info!("У игрока {} взяли {} ПО", player.name, qty);
+        player.vp = player.vp.saturating_sub(qty);
+        game_info!("У игрока {} взяли {} ПО", player.name, qty);
     }
 
     pub fn give_reputation(&mut self, player_hash: u64, qty: u8) {
         let player = self.get_player_by_hash_mut(player_hash);
-        player.reputation += qty;
-        info!("Игроку {} дали {} славы", player.name, qty);
+        player.reputation = player.reputation.saturating_add(qty);
+        game_info!("Игроку {} дали {} славы", player.name, qty);
     }
 
     pub fn take_reputation(&mut self, player_hash: u64, qty: u8) {
         let player = self.get_player_by_hash_mut(player_hash);
-        player.reputation -= qty;
-        info!("У игрока {} взяли {} славы", player.name, qty);
+        player.reputation = player.reputation.saturating_sub(qty);
+        game_info!("У игрока {} взяли {} славы", player.name, qty);
     }
 
     pub fn give_people(&mut self, player_hash: u64, qty: u8) {
-        self.store.people -= qty;
+        let actual = qty.min(self.store.people);
+        self.store.people -= actual;
         let player = self.get_player_by_hash_mut(player_hash);
-        player.people += qty;
-        info!("Игроку {} дали {} людей", player.name, qty);
+        player.people = player.people.saturating_add(actual);
+        game_info!("Игроку {} дали {} людей", player.name, actual);
     }
 
     pub fn take_people(&mut self, player_hash: u64, qty: u8) {
-        self.store.people += qty;
         let player = self.get_player_by_hash_mut(player_hash);
-        player.people -= qty;
-        info!("У игрока {} взяли {} людей", player.name, qty);
+        let actual = qty.min(player.people);
+        player.people -= actual;
+        game_info!("У игрока {} взяли {} людей", player.name, actual);
+        self.store.people = self.store.people.saturating_add(actual);
+    }
+
+    /// Количество свободных (незанятых) фигурок у игрока.
+    /// Свободные = player.people - расставленные на мастерских - расставленные на полях.
+    pub fn count_free_people(&self, player_hash: u64) -> u8 {
+        let total = self.get_player_by_hash(player_hash).people;
+        let on_workshops = self.main_desk.count_player_miples(player_hash);
+        let on_fields = self.field_desk.count_player_miples(player_hash);
+        total.saturating_sub(on_workshops + on_fields)
     }
 
     pub fn to_string(&self) -> String {
